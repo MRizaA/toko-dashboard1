@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Berkah Store — Admin Dashboard (Demo)</title>
+<meta name="description" content="Demo dashboard admin toko online: monitor penjualan, kelola produk & transaksi. Contoh project oleh Karuna.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="app">
+
+  <div class="sidebar__backdrop" id="sidebarBackdrop"></div>
+
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar__brand">
+      <!-- <div class="sidebar__brand-mark">B</div> -->
+      <div class="sidebar__brand-text">Berkah Store<small>Admin Panel (Demo)</small></div>
+    </div>
+    <nav class="sidebar__nav">
+      <a href="#" class="sidebar__link is-active" data-view="dashboard">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/></svg>
+        Dashboard
+      </a>
+      <a href="#" class="sidebar__link" data-view="produk">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8 12 3 3 8l9 5 9-5Z"/><path d="M3 8v8l9 5 9-5V8"/><path d="M12 13v8"/></svg>
+        Produk
+      </a>
+      <a href="#" class="sidebar__link" data-view="transaksi">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2h9l3 3v17H6z"/><path d="M9 8h6M9 12h6M9 16h4"/></svg>
+        Transaksi
+      </a>
+    </nav>
+    <div class="sidebar__foot">
+      <button class="sidebar__reset" id="sidebarReset">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 4v5h5"/></svg>
+        Reset Data Demo
+      </button>
+    </div>
+  </aside>
+
+  <div class="main">
+    <header class="topbar">
+      <div class="topbar__left">
+        <button class="topbar__menu" id="topbarMenu" aria-label="Buka menu">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+        </button>
+        <div>
+          <h1 id="topbarTitle">Dashboard</h1>
+          <p class="topbar__date" id="topbarDate"></p>
+        </div>
+      </div>
+      <div class="topbar__admin">
+        <div style="text-align:right;">
+          <p class="topbar__admin-name">Admin Toko</p>
+          <p class="topbar__admin-role">Berkah Store</p>
+        </div>
+        <!-- <div class="topbar__avatar">A</div> -->
+      </div>
+    </header>
+
+    <!-- ============ DASHBOARD ============ -->
+    <section class="view is-active" id="view-dashboard">
+      <div class="kpi-grid">
+        <div class="kpi-card">
+          <p class="kpi-card__label">Total Pendapatan</p>
+          <p class="kpi-card__value" id="kpiRevenue">Rp 0</p>
+        </div>
+        <div class="kpi-card">
+          <p class="kpi-card__label">Total Pesanan</p>
+          <p class="kpi-card__value" id="kpiOrders">0</p>
+        </div>
+        <div class="kpi-card">  
+          <p class="kpi-card__label">Produk Terjual</p>
+          <p class="kpi-card__value" id="kpiUnits">0 unit</p>
+        </div>
+        <div class="kpi-card" id="kpiStockCard"></div>
+      </div>
+
+      <div class="dash-row dash-row--1">
+        <div class="panel">
+          <div class="panel__head">
+            <div><h2>Pendapatan 6 Bulan Terakhir</h2></div>
+          </div>
+          <div class="panel__body">
+            <div class="chart-wrap" id="revenueChart"></div>
+          </div>
+        </div>
+        <div class="panel">
+          <div class="panel__head"><h2>Stok Menipis</h2></div>
+          <div class="panel__body"><div class="panel-scroll"><div class="mini-list" id="lowStockList"></div></div></div>
+        </div>
+      </div>
+
+      <div class="dash-row dash-row--2">
+        <div class="panel">
+          <div class="panel__head"><h2>Produk Terlaris</h2></div>
+          <div class="panel__body"><div class="panel-scroll"><div class="mini-list" id="topProductsList"></div></div></div>
+        </div>
+        <div class="panel">
+          <div class="panel__head"><h2>Transaksi Terbaru</h2></div>
+          <div class="panel__body">
+            <div class="panel-scroll">
+              <div class="table-scroll">
+                <table class="data-table">
+                  <thead><tr><th>Tanggal</th><th>Customer</th><th>Produk</th><th>Total</th><th>Status</th></tr></thead>
+                  <tbody id="recentTxBody"></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ PRODUK ============ -->
+    <section class="view" id="view-produk">
+      <div class="toolbar">
+        <div class="toolbar__search">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+          <input type="text" id="produkSearch" placeholder="Cari nama atau kategori produk...">
+        </div>
+        <button class="btn btn--primary" id="produkAddBtn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+          Tambah Produk
+        </button>
+      </div>
+      <div class="panel">
+        <div class="table-scroll">
+          <table class="data-table">
+            <thead><tr><th>Nama Produk</th><th>Kategori</th><th>Harga</th><th>Stok</th><th>Status</th><th>Aksi</th></tr></thead>
+            <tbody id="produkBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ TRANSAKSI ============ -->
+    <section class="view" id="view-transaksi">
+      <div class="toolbar">
+        <div class="toolbar__search">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+          <input type="text" id="txSearch" placeholder="Cari customer atau produk...">
+        </div>
+        <div class="toolbar__filters">
+          <select id="txFilterStatus">
+            <option value="">Semua Status</option>
+            <option value="Lunas">Lunas</option>
+            <option value="Pending">Pending</option>
+            <option value="Dibatalkan">Dibatalkan</option>
+          </select>
+          <button class="btn btn--primary" id="txAddBtn">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+            Tambah Transaksi
+          </button>
+        </div>
+      </div>
+      <div class="panel">
+        <div class="table-scroll">
+          <table class="data-table">
+            <thead><tr><th>Tanggal</th><th>Customer</th><th>Produk</th><th>Qty</th><th>Total</th><th>Status</th><th>Aksi</th></tr></thead>
+            <tbody id="txBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+  </div>
+</div>
+
+<!-- ============ MODAL: PRODUK ============ -->
+<div class="modal-overlay" id="produkModal">
+  <div class="modal">
+    <div class="modal__head">
+      <h3 id="produkModalTitle">Tambah Produk</h3>
+      <button class="modal__close" id="produkModalClose" aria-label="Tutup"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg></button>
+    </div>
+    <form id="produkForm">
+      <input type="hidden" id="produkId">
+      <div class="field"><label for="produkNama">Nama Produk</label><input type="text" id="produkNama" required></div>
+      <div class="field-row">
+        <div class="field"><label for="produkKategori">Kategori</label><input type="text" id="produkKategori" placeholder="Elektronik"></div>
+        <div class="field"><label for="produkHarga">Harga (Rp)</label><input type="number" id="produkHarga" min="0" required></div>
+      </div>
+      <div class="field"><label for="produkStok">Stok (pcs)</label><input type="number" id="produkStok" min="0" required></div>
+      <div class="modal__actions">
+        <button type="button" class="btn btn--ghost" id="produkModalCancel">Batal</button>
+        <button type="submit" class="btn btn--primary">Simpan</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- ============ MODAL: TRANSAKSI ============ -->
+<div class="modal-overlay" id="txModal">
+  <div class="modal">
+    <div class="modal__head">
+      <h3 id="txModalTitle">Tambah Transaksi</h3>
+      <button class="modal__close" id="txModalClose" aria-label="Tutup"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg></button>
+    </div>
+    <form id="txForm">
+      <input type="hidden" id="txId">
+      <div class="field-row">
+        <div class="field"><label for="txTanggal">Tanggal</label><input type="date" id="txTanggal" required></div>
+        <div class="field"><label for="txCustomer">Customer</label><input type="text" id="txCustomer" required></div>
+      </div>
+      <div class="field"><label for="txProduk">Produk</label><select id="txProduk"></select></div>
+      <div class="field-row">
+        <div class="field"><label for="txQty">Qty (pcs)</label><input type="number" id="txQty" min="1" required></div>
+        <div class="field">
+          <label for="txStatus">Status</label>
+          <select id="txStatus">
+            <option value="Lunas">Lunas</option>
+            <option value="Pending">Pending</option>
+            <option value="Dibatalkan">Dibatalkan</option>
+          </select>
+        </div>
+      </div>
+      <p class="field__hint">Stok produk otomatis disesuaikan berdasarkan qty transaksi.</p>
+      <div class="modal__actions">
+        <button type="button" class="btn btn--ghost" id="txModalCancel">Batal</button>
+        <button type="submit" class="btn btn--primary">Simpan</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script src="app.js"></script>
+</body>
+</html>
